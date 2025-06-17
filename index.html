@@ -3,122 +3,231 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GPA Calculator</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
 <body>
-    <div class="container mt-5 mb-5 p-4 border border-danger rounded shadow-sm">
-        <h4 class="mb-4 text-danger">Tính điểm tổng kết môn học</h4>
+    <div class="container-fluid px-3 px-md-4">
+        <!-- Score Calculator Section -->
+        <div class="row justify-content-center mt-4 mb-5">
+            <div class="col-12 col-lg-10 col-xl-8">
+                <div class="p-3 p-md-4 border border-danger rounded shadow-sm">
+                    <h4 class="mb-4 text-danger text-center text-md-start">Tính điểm tổng kết môn học</h4>
 
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <label for="structureSelect" class="form-label fw-bold">Chọn cấu trúc điểm (%)</label>
-                <select id="structureSelect" class="form-select" onchange="renderScoreInputs()">
-                    <option value="10-20-20-50">10-20-20-50</option>
-                    <option value="10-10-20-60">10-10-20-60</option>
-                    <option value="10-20-70">10-20-70</option>
-                    <option value="10-30-60">10-30-60</option>
-                    <option value="20-30-50">20-30-50</option>
-                    <option value="20-20-60">20-20-60</option>
-                </select>
+                    <div class="row mb-3">
+                        <div class="col-12 col-md-6">
+                            <label for="structureSelect" class="form-label fw-bold">Chọn cấu trúc điểm (%)</label>
+                            <select id="structureSelect" class="form-select" onchange="renderScoreInputs()">
+                                <option value="10-20-20-50">10-20-20-50</option>
+                                <option value="10-10-20-60">10-10-20-60</option>
+                                <option value="10-20-70">10-20-70</option>
+                                <option value="10-30-60">10-30-60</option>
+                                <option value="20-30-50">20-30-50</option>
+                                <option value="20-20-60">20-20-60</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <label class="form-label fw-bold">Nhập điểm thành phần</label>
+                            <div id="scoreInputs" class="row g-2"></div>
+                        </div>
+                    </div>
+
+                    <div class="d-grid d-md-block">
+                        <button class="btn btn-danger" onclick="calculateFinalScore()">Tính điểm tổng kết</button>
+                    </div>
+                    <p id="finalResult" class="fw-bold text-success mt-3 text-center text-md-start"></p>
+                </div>
             </div>
         </div>
 
-        <div class="row mb-3">
-            <div class="col">
-                <label class="form-label fw-bold">Nhập điểm thành phần</label>
-                <div id="scoreInputs" class="d-flex flex-wrap gap-2"></div>
+        <!-- GPA Calculator Section -->
+        <div class="row justify-content-center mt-5 mb-5">
+            <div class="col-12 col-lg-10 col-xl-8">
+                <div class="border border-success rounded p-3 p-md-4 shadow-sm">
+                    <h4 class="mb-4 text-success text-center text-md-start">Tính điểm GPA</h4>
+                    
+                    <div class="mb-3 d-grid d-md-block">
+                        <button class="btn btn-success" onclick="addCourse()">Thêm môn học</button>
+                    </div>
+                    
+                    <!-- Mobile Card View -->
+                    <div class="d-md-none" id="mobileCoursesView"></div>
+                    
+                    <!-- Desktop Table View -->
+                    <div class="d-none d-md-block table-responsive">
+                        <table class="table table-bordered align-middle" id="coursesTable">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Tên môn học</th>
+                                    <th>Số tín chỉ</th>
+                                    <th>Điểm hệ chữ</th>
+                                    <th>Hành động</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="mt-3 d-grid d-md-block">
+                        <button class="btn btn-success" onclick="calculateGPA()">Tính GPA</button>
+                    </div>
+                    <div id="result" class="mt-4 fw-bold text-success text-center text-md-start" style="white-space: pre-line;"></div>
+                </div>
             </div>
         </div>
-
-        <button class="btn btn-danger" onclick="calculateFinalScore()">Tính điểm tổng kết</button>
-        <p id="finalResult" class="fw-bold text-success mt-3"></p>
     </div>
 
-    <div class="container mt-5 mb-5 border border-success rounded p-4 shadow-sm">
-        <h4 class="mb-4 text-success">Tính điểm GPA</h4>
-        <div class="mb-3">
-            <button class="btn btn-success" onclick="addCourse()">Thêm môn học</button>
-        </div>
-        <table class="table table-bordered align-middle" id="coursesTable">
-            <thead class="table-light">
-                <tr>
-                    <th>Tên môn học</th>
-                    <th>Số tín chỉ</th>
-                    <th>Điểm hệ chữ</th>
-                    <th>Hành động</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-        <div class="mt-3">
-            <button class="btn btn-success" onclick="calculateGPA()">Tính GPA</button>
-        </div>
-        <p id="result" class="mt-4 fw-bold text-success"></p>
-    </div>
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         let courses = [];
+        let courseCounter = 0;
 
         function addCourse() {
+            courseCounter++;
+            const course = {
+                id: courseCounter,
+                subject: '',
+                credits: '',
+                grade: 'A+'
+            };
+            courses.push(course);
+            renderCourses();
+        }
+
+        function removeCourse(id) {
+            courses = courses.filter(course => course.id !== id);
+            renderCourses();
+        }
+
+        function updateCourse(id, field, value) {
+            const course = courses.find(c => c.id === id);
+            if (course) {
+                course[field] = value;
+            }
+        }
+
+        function renderCourses() {
+            renderDesktopTable();
+            renderMobileCards();
+        }
+
+        function renderDesktopTable() {
             const tableBody = document.getElementById('coursesTable').getElementsByTagName('tbody')[0];
-            const row = tableBody.insertRow();
-            row.innerHTML = `
-                <td><input type="text" class="form-control subject" placeholder="VD: Lập trình C++"></td>
-                <td><input type="number" class="form-control credits" min="1" placeholder="Tín chỉ"></td>
-                <td>
-                    <select class="form-select grades">
-                        <option value="A+">A+</option>
-                        <option value="A">A</option>
-                        <option value="B+">B+</option>
-                        <option value="B">B</option>
-                        <option value="C+">C+</option>
-                        <option value="C">C</option>
-                        <option value="D+">D+</option>
-                        <option value="D">D</option>
-                        <option value="F">F</option>
-                    </select>
-                </td>
-                <td><button class="btn btn-outline-danger btn-sm" onclick="this.closest('tr').remove()">Xóa</button></td>
-            `;
+            tableBody.innerHTML = '';
+            
+            courses.forEach(course => {
+                const row = tableBody.insertRow();
+                row.innerHTML = `
+                    <td>
+                        <input type="text" class="form-control" placeholder="VD: Lập trình C++" 
+                               value="${course.subject}" onchange="updateCourse(${course.id}, 'subject', this.value)">
+                    </td>
+                    <td>
+                        <input type="number" class="form-control" min="1" placeholder="Tín chỉ" 
+                               value="${course.credits}" onchange="updateCourse(${course.id}, 'credits', this.value)">
+                    </td>
+                    <td>
+                        <select class="form-select" onchange="updateCourse(${course.id}, 'grade', this.value)">
+                            <option value="A+" ${course.grade === 'A+' ? 'selected' : ''}>A+</option>
+                            <option value="A" ${course.grade === 'A' ? 'selected' : ''}>A</option>
+                            <option value="B+" ${course.grade === 'B+' ? 'selected' : ''}>B+</option>
+                            <option value="B" ${course.grade === 'B' ? 'selected' : ''}>B</option>
+                            <option value="C+" ${course.grade === 'C+' ? 'selected' : ''}>C+</option>
+                            <option value="C" ${course.grade === 'C' ? 'selected' : ''}>C</option>
+                            <option value="D+" ${course.grade === 'D+' ? 'selected' : ''}>D+</option>
+                            <option value="D" ${course.grade === 'D' ? 'selected' : ''}>D</option>
+                            <option value="F" ${course.grade === 'F' ? 'selected' : ''}>F</option>
+                        </select>
+                    </td>
+                    <td>
+                        <button class="btn btn-outline-danger btn-sm" onclick="removeCourse(${course.id})">Xóa</button>
+                    </td>
+                `;
+            });
+        }
+
+        function renderMobileCards() {
+            const mobileView = document.getElementById('mobileCoursesView');
+            mobileView.innerHTML = '';
+            
+            courses.forEach((course, index) => {
+                const card = document.createElement('div');
+                card.className = 'card mb-3';
+                card.innerHTML = `
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h6 class="card-title mb-0">Môn học ${index + 1}</h6>
+                            <button class="btn btn-outline-danger btn-sm" onclick="removeCourse(${course.id})">Xóa</button>
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label small">Tên môn học</label>
+                            <input type="text" class="form-control form-control-sm" placeholder="VD: Lập trình C++" 
+                                   value="${course.subject}" onchange="updateCourse(${course.id}, 'subject', this.value)">
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <label class="form-label small">Số tín chỉ</label>
+                                <input type="number" class="form-control form-control-sm" min="1" placeholder="Tín chỉ" 
+                                       value="${course.credits}" onchange="updateCourse(${course.id}, 'credits', this.value)">
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label small">Điểm hệ chữ</label>
+                                <select class="form-select form-select-sm" onchange="updateCourse(${course.id}, 'grade', this.value)">
+                                    <option value="A+" ${course.grade === 'A+' ? 'selected' : ''}>A+</option>
+                                    <option value="A" ${course.grade === 'A' ? 'selected' : ''}>A</option>
+                                    <option value="B+" ${course.grade === 'B+' ? 'selected' : ''}>B+</option>
+                                    <option value="B" ${course.grade === 'B' ? 'selected' : ''}>B</option>
+                                    <option value="C+" ${course.grade === 'C+' ? 'selected' : ''}>C+</option>
+                                    <option value="C" ${course.grade === 'C' ? 'selected' : ''}>C</option>
+                                    <option value="D+" ${course.grade === 'D+' ? 'selected' : ''}>D+</option>
+                                    <option value="D" ${course.grade === 'D' ? 'selected' : ''}>D</option>
+                                    <option value="F" ${course.grade === 'F' ? 'selected' : ''}>F</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                mobileView.appendChild(card);
+            });
         }
 
         function gradeToGPA(grade) {
-            // Quy đổi điểm chữ sang hệ 4 theo chuẩn Học viện CNTT TP.HCM
             const gpaScale = { 'A+': 4.0, 'A': 3.7, 'B+': 3.5, 'B': 3.0, 'C+': 2.5, 'C': 2.0, 'D+': 1.5, 'D': 1.0, 'F': 0 };
             return gpaScale[grade] || 0;
         }
 
         function calculateGPA() {
-            const rows = document.getElementById('coursesTable').getElementsByTagName('tbody')[0].getElementsByTagName('tr');
-            const courses = [];
+            const validCourses = courses.filter(course => 
+                course.subject.trim() !== '' && 
+                course.credits !== '' && 
+                parseInt(course.credits) > 0
+            );
 
-            for (let i = 0; i < rows.length; i++) {
-                const subject = rows[i].querySelector('.subject').value || 'Unnamed';
-                const credits = parseInt(rows[i].querySelector('.credits').value) || 0;
-                const grade = rows[i].querySelector('.grades').value;
-                if (credits > 0) {
-                    courses.push({ subject, credits, grade });
-                }
+            if (validCourses.length === 0) {
+                document.getElementById('result').innerText = 'Vui lòng thêm ít nhất một môn học hợp lệ!';
+                return;
             }
 
             let totalCredits = 0;
             let weightedGPA = 0;
 
-            courses.forEach(course => {
-                const gpa = gradeToGPA(course.grade); // Chuyển điểm chữ → GPA thang 4
-                totalCredits += course.credits;
-                weightedGPA += gpa * course.credits;
+            validCourses.forEach(course => {
+                const gpa = gradeToGPA(course.grade);
+                const credits = parseInt(course.credits);
+                totalCredits += credits;
+                weightedGPA += gpa * credits;
             });
 
             const gpa = totalCredits > 0 ? (weightedGPA / totalCredits) : 0;
 
-            // Hiển thị GPA và tổng tín chỉ
             document.getElementById('result').innerText =
                 `GPA (thang 4.0): ${gpa.toFixed(2)}\nSố tín chỉ tích lũy: ${totalCredits}`;
         }
-
 
         function renderScoreInputs() {
             const structure = document.getElementById("structureSelect").value.split("-").map(Number);
@@ -126,38 +235,55 @@
             scoreInputsContainer.innerHTML = "";
 
             structure.forEach((percent, index) => {
+                const colDiv = document.createElement("div");
+                colDiv.className = "col-6 col-md-3 col-lg-2";
+                
                 const input = document.createElement("input");
                 input.type = "number";
-                input.style.width = "20%";
                 input.className = "form-control";
-                input.placeholder = `Điểm ${percent}%`;
+                input.placeholder = `${percent}%`;
                 input.setAttribute("data-weight", percent);
-                scoreInputsContainer.appendChild(input);
+                input.step = "0.1";
+                input.min = "0";
+                input.max = "10";
+                
+                colDiv.appendChild(input);
+                scoreInputsContainer.appendChild(colDiv);
             });
         }
 
         function calculateFinalScore() {
             const inputs = document.querySelectorAll("#scoreInputs input");
             let total = 0, totalWeight = 0;
+            let hasEmptyInputs = false;
 
             inputs.forEach(input => {
                 const weight = parseFloat(input.getAttribute("data-weight"));
-                const score = parseFloat(input.value) || 0;
+                const score = parseFloat(input.value);
+                
+                if (isNaN(score) || input.value.trim() === '') {
+                    hasEmptyInputs = true;
+                    return;
+                }
+                
                 total += (weight / 100) * score;
                 totalWeight += weight;
             });
+
+            if (hasEmptyInputs) {
+                document.getElementById("finalResult").innerText = "Vui lòng nhập đầy đủ tất cả điểm thành phần!";
+                return;
+            }
 
             if (totalWeight !== 100) {
                 document.getElementById("finalResult").innerText = "Tổng trọng số không phải 100%. Vui lòng kiểm tra lại!";
                 return;
             }
 
-            // Quy đổi điểm tổng kết sang điểm chữ theo chuẩn Học viện CNTT TP.HCM
             const grade = convertToLetterGrade(total);
             document.getElementById("finalResult").innerText = `Điểm tổng kết: ${total.toFixed(2)} (${grade})`;
         }
 
-        // Hàm quy đổi điểm theo chuẩn Học viện CNTT TP.HCM
         function convertToLetterGrade(score) {
             const rounded = Math.round(score * 10) / 10;
             if (rounded >= 9.0) return 'A+';
@@ -171,6 +297,7 @@
             return 'F';
         }
 
+        // Initialize
         renderScoreInputs();
     </script>
 </body>
