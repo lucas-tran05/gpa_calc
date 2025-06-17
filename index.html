@@ -32,14 +32,14 @@
             </div>
         </div>
 
-        <button class="btn btn-danger fw-bold" onclick="calculateFinalScore()">Tính điểm tổng kết</button>
+        <button class="btn btn-danger" onclick="calculateFinalScore()">Tính điểm tổng kết</button>
         <p id="finalResult" class="fw-bold text-success mt-3"></p>
     </div>
 
-    <div class="container mt-5">
-        <h3 class="mb-4 ">GPA Calculator</h3>
+    <div class="container mt-5 mb-5 border border-success rounded p-4 shadow-sm">
+        <h4 class="mb-4 text-success">Tính điểm GPA</h4>
         <div class="mb-3">
-            <button class="btn btn-outline-success" onclick="addCourse()">Thêm môn học</button>
+            <button class="btn btn-success" onclick="addCourse()">Thêm môn học</button>
         </div>
         <table class="table table-bordered align-middle" id="coursesTable">
             <thead class="table-light">
@@ -53,7 +53,7 @@
             <tbody></tbody>
         </table>
         <div class="mt-3">
-            <button class="btn btn-outline-primary" onclick="calculateGPA()">Tính GPA</button>
+            <button class="btn btn-success" onclick="calculateGPA()">Tính GPA</button>
         </div>
         <p id="result" class="mt-4 fw-bold text-success"></p>
     </div>
