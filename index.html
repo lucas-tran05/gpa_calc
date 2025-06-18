@@ -53,6 +53,7 @@
                     
                     <div class="mb-3 d-grid d-md-block">
                         <button class="btn btn-success" onclick="addCourse()">Thêm môn học</button>
+                        <button class="btn btn-warning ms-2" onclick="clearAllCourses()">Xóa tất cả</button>
                     </div>
                     
                     <!-- Mobile Card View -->
@@ -63,6 +64,7 @@
                         <table class="table table-bordered align-middle" id="coursesTable">
                             <thead class="table-light">
                                 <tr>
+                                    <th>ID môn học</th>
                                     <th>Tên môn học</th>
                                     <th>Số tín chỉ</th>
                                     <th>Điểm hệ chữ</th>
@@ -87,27 +89,74 @@
         let courses = [];
         let courseCounter = 0;
 
+        // LocalStorage functions
+        function saveCourses() {
+            try {
+                localStorage.setItem('gpa_courses', JSON.stringify(courses));
+                localStorage.setItem('gpa_course_counter', courseCounter.toString());
+            } catch (error) {
+                console.warn('LocalStorage không khả dụng:', error);
+            }
+        }
+
+        function loadCourses() {
+            try {
+                const savedCourses = localStorage.getItem('gpa_courses');
+                const savedCounter = localStorage.getItem('gpa_course_counter');
+                
+                if (savedCourses) {
+                    courses = JSON.parse(savedCourses);
+                }
+                if (savedCounter) {
+                    courseCounter = parseInt(savedCounter);
+                }
+            } catch (error) {
+                console.warn('Không thể tải dữ liệu từ LocalStorage:', error);
+                courses = [];
+                courseCounter = 0;
+            }
+        }
+
         function addCourse() {
             courseCounter++;
             const course = {
                 id: courseCounter,
+                courseId: '', // ID môn học do người dùng nhập
                 subject: '',
                 credits: '',
                 grade: 'A+'
             };
             courses.push(course);
+            saveCourses();
             renderCourses();
         }
 
         function removeCourse(id) {
             courses = courses.filter(course => course.id !== id);
+            saveCourses();
             renderCourses();
+        }
+
+        function clearAllCourses() {
+            if (courses.length === 0) {
+                alert('Không có môn học nào để xóa!');
+                return;
+            }
+            
+            if (confirm('Bạn có chắc chắn muốn xóa tất cả môn học?')) {
+                courses = [];
+                courseCounter = 0;
+                saveCourses();
+                renderCourses();
+                document.getElementById('result').innerText = '';
+            }
         }
 
         function updateCourse(id, field, value) {
             const course = courses.find(c => c.id === id);
             if (course) {
                 course[field] = value;
+                saveCourses();
             }
         }
 
@@ -123,6 +172,10 @@
             courses.forEach(course => {
                 const row = tableBody.insertRow();
                 row.innerHTML = `
+                    <td>
+                        <input type="text" class="form-control" placeholder="VD: IT001" 
+                               value="${course.courseId}" onchange="updateCourse(${course.id}, 'courseId', this.value)">
+                    </td>
                     <td>
                         <input type="text" class="form-control" placeholder="VD: Lập trình C++" 
                                value="${course.subject}" onchange="updateCourse(${course.id}, 'subject', this.value)">
@@ -163,6 +216,11 @@
                         <div class="d-flex justify-content-between align-items-center mb-2">
                             <h6 class="card-title mb-0">Môn học ${index + 1}</h6>
                             <button class="btn btn-outline-danger btn-sm" onclick="removeCourse(${course.id})">Xóa</button>
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label small">ID môn học</label>
+                            <input type="text" class="form-control form-control-sm" placeholder="VD: IT001" 
+                                   value="${course.courseId}" onchange="updateCourse(${course.id}, 'courseId', this.value)">
                         </div>
                         <div class="mb-2">
                             <label class="form-label small">Tên môn học</label>
@@ -226,7 +284,7 @@
             const gpa = totalCredits > 0 ? (weightedGPA / totalCredits) : 0;
 
             document.getElementById('result').innerText =
-                `GPA (thang 4.0): ${gpa.toFixed(2)}\nSố tín chỉ tích lũy: ${totalCredits}`;
+                `GPA (thang 4.0): ${gpa.toFixed(2)}\nSố tín chỉ tích lũy: ${totalCredits}\nSố môn học: ${validCourses.length}`;
         }
 
         function renderScoreInputs() {
@@ -297,8 +355,15 @@
             return 'F';
         }
 
-        // Initialize
-        renderScoreInputs();
+        // Initialize application
+        function init() {
+            loadCourses();
+            renderScoreInputs();
+            renderCourses();
+        }
+
+        // Run initialization when page loads
+        window.addEventListener('load', init);
     </script>
 </body>
 
