@@ -50,15 +50,19 @@
             <div class="col-12 col-lg-10 col-xl-8">
                 <div class="border border-success rounded p-3 p-md-4 shadow-sm">
                     <h4 class="mb-4 text-success text-center text-md-start">Tính điểm GPA</h4>
-                    
-                    <div class="mb-3 d-grid d-md-block">
-                        <button class="btn btn-success" onclick="addCourse()">Thêm môn học</button>
-                        <button class="btn btn-warning ms-2" onclick="clearAllCourses()">Xóa tất cả</button>
+
+                    <div class="mb-3 d-block d-md-flex">
+                        <button class="btn btn-success w-100 mb-2 mb-md-0 flex-md-grow-0" style="flex-basis: 25%;"
+                            onclick="addCourse()">Thêm môn học</button>
+                        <button class="btn btn-warning w-100 flex-md-grow-0 ms-md-2" style="flex-basis: 25%;"
+                            onclick="clearAllCourses()">Xóa tất cả</button>
                     </div>
-                    
+
+
+
                     <!-- Mobile Card View -->
                     <div class="d-md-none" id="mobileCoursesView"></div>
-                    
+
                     <!-- Desktop Table View -->
                     <div class="d-none d-md-block table-responsive">
                         <table class="table table-bordered align-middle" id="coursesTable">
@@ -74,11 +78,12 @@
                             <tbody></tbody>
                         </table>
                     </div>
-                    
+
                     <div class="mt-3 d-grid d-md-block">
                         <button class="btn btn-success" onclick="calculateGPA()">Tính GPA</button>
                     </div>
-                    <div id="result" class="mt-4 fw-bold text-success text-center text-md-start" style="white-space: pre-line;"></div>
+                    <div id="result" class="mt-4 fw-bold text-success text-center text-md-start"
+                        style="white-space: pre-line;"></div>
                 </div>
             </div>
         </div>
@@ -103,7 +108,7 @@
             try {
                 const savedCourses = localStorage.getItem('gpa_courses');
                 const savedCounter = localStorage.getItem('gpa_course_counter');
-                
+
                 if (savedCourses) {
                     courses = JSON.parse(savedCourses);
                 }
@@ -142,7 +147,7 @@
                 alert('Không có môn học nào để xóa!');
                 return;
             }
-            
+
             if (confirm('Bạn có chắc chắn muốn xóa tất cả môn học?')) {
                 courses = [];
                 courseCounter = 0;
@@ -168,7 +173,7 @@
         function renderDesktopTable() {
             const tableBody = document.getElementById('coursesTable').getElementsByTagName('tbody')[0];
             tableBody.innerHTML = '';
-            
+
             courses.forEach(course => {
                 const row = tableBody.insertRow();
                 row.innerHTML = `
@@ -207,7 +212,7 @@
         function renderMobileCards() {
             const mobileView = document.getElementById('mobileCoursesView');
             mobileView.innerHTML = '';
-            
+
             courses.forEach((course, index) => {
                 const card = document.createElement('div');
                 card.className = 'card mb-3';
@@ -260,9 +265,9 @@
         }
 
         function calculateGPA() {
-            const validCourses = courses.filter(course => 
-                course.subject.trim() !== '' && 
-                course.credits !== '' && 
+            const validCourses = courses.filter(course =>
+                course.subject.trim() !== '' &&
+                course.credits !== '' &&
                 parseInt(course.credits) > 0
             );
 
@@ -295,7 +300,7 @@
             structure.forEach((percent, index) => {
                 const colDiv = document.createElement("div");
                 colDiv.className = "col-6 col-md-3 col-lg-2";
-                
+
                 const input = document.createElement("input");
                 input.type = "number";
                 input.className = "form-control";
@@ -304,7 +309,7 @@
                 input.step = "0.1";
                 input.min = "0";
                 input.max = "10";
-                
+
                 colDiv.appendChild(input);
                 scoreInputsContainer.appendChild(colDiv);
             });
@@ -318,12 +323,12 @@
             inputs.forEach(input => {
                 const weight = parseFloat(input.getAttribute("data-weight"));
                 const score = parseFloat(input.value);
-                
+
                 if (isNaN(score) || input.value.trim() === '') {
                     hasEmptyInputs = true;
                     return;
                 }
-                
+
                 total += (weight / 100) * score;
                 totalWeight += weight;
             });
